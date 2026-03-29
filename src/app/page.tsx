@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const courseHighlights = [
@@ -5,19 +6,19 @@ const courseHighlights = [
     title: "Yoga",
     description:
       "Finde Balance und innere Ruhe. Meine Yoga-Kurse sind für alle Level geeignet — ob Anfänger oder Fortgeschrittene.",
-    icon: "🧘",
+    image: "/images/kurs-yoga.jpg",
   },
   {
     title: "Schwangeren-Yoga",
     description:
       "Sanfte Übungen speziell für werdende Mamas. Stärke deinen Körper und bereite dich auf die Geburt vor.",
-    icon: "🤰",
+    image: "/images/kurs-schwangeren-yoga.jpg",
   },
   {
     title: "Rückbildung",
     description:
       "Nach der Geburt zurück zu dir selbst finden. Gezieltes Training für Beckenboden und Rumpfmuskulatur.",
-    icon: "💪",
+    image: "/images/kurs-rueckbildung.jpg",
   },
 ];
 
@@ -25,16 +26,23 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center justify-center bg-[var(--color-warm-100)]">
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-warm-100)] to-[var(--color-warm-50)]" />
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+        <Image
+          src="/images/hero.jpg"
+          alt="Yoga Studio"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-[var(--color-warm-50)]/70" />
         <div className="relative z-10 max-w-3xl mx-auto px-6 text-center py-20">
-          <p className="text-sm tracking-[0.3em] uppercase text-[var(--color-sage-600)] mb-4">
+          <p className="text-sm tracking-[0.3em] uppercase text-[var(--color-sage-700)] mb-4">
             Yoga &middot; Schwangeren-Yoga &middot; Rückbildung
           </p>
           <h1 className="text-5xl md:text-6xl lg:text-7xl text-[var(--color-warm-900)] mb-6 leading-tight">
             Kathi Miler
           </h1>
-          <p className="text-lg md:text-xl text-[var(--color-warm-600)] max-w-xl mx-auto leading-relaxed mb-10">
+          <p className="text-lg md:text-xl text-[var(--color-warm-700)] max-w-xl mx-auto leading-relaxed mb-10">
             Bewegung mit Achtsamkeit. Kurse für jede Lebensphase — für dich,
             in der Schwangerschaft und danach.
           </p>
@@ -47,7 +55,7 @@ export default function Home() {
             </Link>
             <Link
               href="/kontakt"
-              className="inline-block border border-[var(--color-warm-400)] text-[var(--color-warm-700)] px-8 py-3 text-sm uppercase tracking-wider hover:bg-[var(--color-warm-200)] transition-colors"
+              className="inline-block border border-[var(--color-warm-500)] text-[var(--color-warm-800)] px-8 py-3 text-sm uppercase tracking-wider hover:bg-[var(--color-warm-200)] transition-colors bg-white/50"
             >
               Kontakt aufnehmen
             </Link>
@@ -59,13 +67,13 @@ export default function Home() {
       <section className="py-20 bg-[var(--color-warm-50)]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Placeholder Image */}
-            <div className="aspect-[4/5] bg-[var(--color-warm-200)] flex items-center justify-center text-[var(--color-warm-400)] text-sm">
-              <div className="text-center">
-                <div className="text-4xl mb-2">📷</div>
-                <p>Foto von Kathi</p>
-                <p className="text-xs mt-1">(Platzhalter)</p>
-              </div>
+            <div className="relative aspect-[4/5] overflow-hidden">
+              <Image
+                src="/images/portrait.jpg"
+                alt="Kathi Miler"
+                fill
+                className="object-cover"
+              />
             </div>
 
             <div>
@@ -114,15 +122,24 @@ export default function Home() {
             {courseHighlights.map((course) => (
               <div
                 key={course.title}
-                className="bg-[var(--color-warm-50)] p-8 text-center group hover:bg-[var(--color-sage-50)] transition-colors"
+                className="bg-[var(--color-warm-50)] group hover:bg-[var(--color-sage-50)] transition-colors overflow-hidden"
               >
-                <div className="text-4xl mb-4">{course.icon}</div>
-                <h3 className="text-xl text-[var(--color-warm-900)] mb-3">
-                  {course.title}
-                </h3>
-                <p className="text-[var(--color-warm-600)] text-sm leading-relaxed">
-                  {course.description}
-                </p>
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={course.image}
+                    alt={course.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-6 text-center">
+                  <h3 className="text-xl text-[var(--color-warm-900)] mb-3">
+                    {course.title}
+                  </h3>
+                  <p className="text-[var(--color-warm-600)] text-sm leading-relaxed">
+                    {course.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
