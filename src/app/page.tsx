@@ -24,13 +24,13 @@ const courseHighlights = [
     title: "Mama-Sport",
     description:
       "Fit bleiben als Mama — gemeinsam trainieren, Kraft aufbauen und den Alltag mit mehr Energie meistern.",
-    image: null,
+    image: "/images/kurs-mama-sport.jpg",
   },
   {
     title: "Workout Mix",
     description:
       "Abwechslungsreiches Ganzkörpertraining mit Elementen aus Fitness, Kraft und Ausdauer.",
-    image: null,
+    image: "/images/kurs-workout-mix.jpg",
   },
 ];
 
