@@ -25,7 +25,7 @@ export default function DatenschutzPage() {
               <br />
               [Adresse]
               <br />
-              E-Mail: info@katharinamiler.de
+              E-Mail: katharina@miler.de
             </p>
           </div>
 
@@ -119,7 +119,7 @@ export default function DatenschutzPage() {
             <p className="mt-2">
               <strong>Widerruf:</strong> Sie können Ihre Einwilligung
               jederzeit mit Wirkung für die Zukunft widerrufen, indem Sie
-              uns eine E-Mail an info@katharinamiler.de senden. Der Widerruf
+              uns eine E-Mail an katharina@miler.de senden. Der Widerruf
               berührt nicht die Rechtmäßigkeit der bis dahin erfolgten
               Verarbeitung.
             </p>

@@ -28,7 +28,7 @@ export default function ImpressumPage() {
             <div>
               <p className="font-semibold">Kontakt</p>
               <p>
-                E-Mail: info@katharinamiler.de
+                E-Mail: katharina@miler.de
                 <br />
                 Telefon: [Telefonnummer]
               </p>

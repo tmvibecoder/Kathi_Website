@@ -204,10 +204,10 @@ export default function KontaktPage() {
             <p>
               Oder schreib mir direkt an:{" "}
               <a
-                href="mailto:info@katharinamiler.de"
+                href="mailto:katharina@miler.de"
                 className="text-[var(--color-sage-600)] underline underline-offset-4"
               >
-                info@katharinamiler.de
+                katharina@miler.de
               </a>
             </p>
           </div>
