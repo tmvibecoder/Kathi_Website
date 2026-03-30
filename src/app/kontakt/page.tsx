@@ -120,15 +120,20 @@ function KontaktForm() {
           className="w-full border border-[var(--color-warm-300)] bg-white px-4 py-3 text-sm focus:outline-none focus:border-[var(--color-sage-500)] transition-colors"
         >
           <option value="">Bitte wählen...</option>
-          <option value="Hatha Yoga">Hatha Yoga</option>
-          <option value="Yoga für Schwangere">Yoga für Schwangere</option>
-          <option value="Rückbildungskurs">Rückbildungskurs</option>
-          <option value="Yoga (DJK Ottenhofen)">Yoga (DJK Ottenhofen)</option>
-          <option value="Rückbildung (DJK Ottenhofen)">
-            Rückbildung (DJK Ottenhofen)
-          </option>
-          <option value="Yoga Grundkurs (VHS)">Yoga Grundkurs (VHS)</option>
-          <option value="Schwangeren-Yoga (VHS)">Schwangeren-Yoga (VHS)</option>
+          <optgroup label="Eigene Kurse">
+            <option value="Schwangeren-Yoga (Mo 17:45)">Schwangeren-Yoga (Mo 17:45)</option>
+            <option value="Schwangeren-Yoga (Mo 19:00)">Schwangeren-Yoga (Mo 19:00)</option>
+            <option value="Rückbildung (Mi 09:00)">Rückbildung (Mi 09:00)</option>
+            <option value="Mama-Sport (Mi 10:15)">Mama-Sport (Mi 10:15)</option>
+          </optgroup>
+          <optgroup label="DJK Ottenhofen">
+            <option value="Yoga (DJK, Di 17:30)">Yoga (Di 17:30)</option>
+            <option value="Early Bird Yoga (DJK, Fr 07:00)">Early Bird Yoga (Fr 07:00)</option>
+            <option value="Workout Mix (DJK, Fr 08:15)">Workout Mix (Fr 08:15)</option>
+          </optgroup>
+          <optgroup label="VHS Poing">
+            <option value="Mama-Sport (VHS, Di 10:15)">Mama-Sport (Di 10:15)</option>
+          </optgroup>
           <option value="Allgemeine Anfrage">Allgemeine Anfrage</option>
         </select>
       </div>

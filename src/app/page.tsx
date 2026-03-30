@@ -20,6 +20,18 @@ const courseHighlights = [
       "Nach der Geburt zurück zu dir selbst finden. Gezieltes Training für Beckenboden und Rumpfmuskulatur.",
     image: "/images/kurs-rueckbildung.jpg",
   },
+  {
+    title: "Mama-Sport",
+    description:
+      "Fit bleiben als Mama — gemeinsam trainieren, Kraft aufbauen und den Alltag mit mehr Energie meistern.",
+    image: null,
+  },
+  {
+    title: "Workout Mix",
+    description:
+      "Abwechslungsreiches Ganzkörpertraining mit Elementen aus Fitness, Kraft und Ausdauer.",
+    image: null,
+  },
 ];
 
 export default function Home() {
@@ -85,20 +97,31 @@ export default function Home() {
               </h2>
               <div className="space-y-4 text-[var(--color-warm-600)] leading-relaxed">
                 <p>
-                  Als zertifizierte Yoga-Lehrerin begleite ich dich mit Herz und
-                  Fachwissen durch jede Lebensphase. Ob du zum ersten Mal auf
-                  die Matte kommst, dich auf die Geburt vorbereitest oder nach
-                  der Entbindung wieder zu dir finden möchtest — bei mir bist du
-                  richtig.
+                  Seit über 10 Jahren bringe ich Menschen in Bewegung. Angefangen
+                  habe ich beim DJK Ottenhofen — und seitdem hat mich die
+                  Begeisterung für Sport und Gesundheit nicht mehr losgelassen.
                 </p>
                 <p>
-                  Meine Kurse finden sowohl in eigener Regie als auch über den
-                  Sportverein DJK Ottenhofen und die Volkshochschule statt. So
-                  erreichst du mich über verschiedene Wege und findest garantiert
-                  den passenden Kurs für dich.
+                  Ich bin ausgebildete Group Fitness Trainerin (B-Lizenz),
+                  Personal Trainerin und Fitnesstrainerin (Euro Education) sowie
+                  zertifizierte Yoga-Lehrerin (200+ Stunden, München). Außerdem
+                  habe ich Ausbildungen in Schwangeren-Yoga, Rückbildung und
+                  Mama-Sport absolviert.
                 </p>
-                <p className="text-sm italic text-[var(--color-warm-500)]">
-                  (Hier kommt bald dein persönlicher Text, Kathi!)
+                <p>
+                  Zweieinhalb Jahre lang habe ich im Gesundheits- und
+                  Fitnessstudio Tripila gearbeitet und dort Trampolin-Kurse,
+                  High-Intensity-Training, Reha-Sport, Aqua-Gymnastik,
+                  Lauftraining und Firmensport gegeben. Nach meiner eigenen
+                  Schwangerschaft habe ich meine Leidenschaft für Mama-Kurse
+                  entdeckt: Seit drei Jahren unterrichte ich Schwangeren-Yoga
+                  und seit eineinhalb Jahren Rückbildung und Mama-Sport in der
+                  Hebammenpraxis Markt Schwaben.
+                </p>
+                <p>
+                  Meine Kurse finden in eigener Regie, über den DJK Ottenhofen
+                  und über die Volkshochschule Poing statt — so findest du
+                  garantiert den passenden Kurs für dich.
                 </p>
               </div>
             </div>
@@ -118,19 +141,26 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {courseHighlights.map((course) => (
-              <div
+              <Link
                 key={course.title}
-                className="bg-[var(--color-warm-50)] group hover:bg-[var(--color-sage-50)] transition-colors overflow-hidden"
+                href="/kurse"
+                className="bg-[var(--color-warm-50)] group hover:bg-[var(--color-sage-50)] transition-colors overflow-hidden block"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={course.image}
-                    alt={course.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {course.image ? (
+                    <Image
+                      src={course.image}
+                      alt={course.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-[var(--color-sage-100)] flex items-center justify-center">
+                      <span className="text-[var(--color-sage-400)] text-sm">Foto folgt</span>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6 text-center">
                   <h3 className="text-xl text-[var(--color-warm-900)] mb-3">
@@ -140,7 +170,7 @@ export default function Home() {
                     {course.description}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

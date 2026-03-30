@@ -51,6 +51,11 @@ function CourseCard({ course }: { course: (typeof courses)[0] }) {
             {course.startDate}
           </p>
         )}
+        {course.note && (
+          <p className="text-[var(--color-warm-500)] italic text-xs mt-1">
+            ℹ️ {course.note}
+          </p>
+        )}
       </div>
       {course.status !== "ausgebucht" && (
         <Link
@@ -80,7 +85,7 @@ export default function KursePage() {
           </h1>
           <p className="text-[var(--color-warm-600)] max-w-xl mx-auto">
             Hier findest du eine Übersicht aller aktuellen und geplanten Kurse —
-            ob direkt bei mir, über DJK Ottenhofen oder die Volkshochschule.
+            ob direkt bei mir, über den DJK Ottenhofen oder die Volkshochschule Poing.
           </p>
         </div>
       </section>

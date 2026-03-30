@@ -6,55 +6,75 @@ export interface Course {
   description: string;
   provider: CourseProvider;
   providerName: string;
-  category: "yoga" | "schwangeren-yoga" | "rueckbildung";
+  category: "yoga" | "schwangeren-yoga" | "rueckbildung" | "mama-sport" | "workout-mix";
   schedule: string;
+  day: string;
   location: string;
   status: "aktiv" | "geplant" | "ausgebucht";
   spots?: string;
   price?: string;
   startDate?: string;
+  note?: string;
 }
 
 export const courses: Course[] = [
-  // Eigene Kurse
+  // Eigene Kurse (Hebammenpraxis Markt Schwaben)
   {
-    id: "yoga-eigen-1",
-    title: "Hatha Yoga",
-    description:
-      "Klassisches Hatha Yoga für alle Level. Wir arbeiten an Kraft, Flexibilität und innerer Ruhe.",
-    provider: "eigen",
-    providerName: "Eigener Kurs",
-    category: "yoga",
-    schedule: "Montags, 18:00 – 19:15 Uhr",
-    location: "Kursraum Kathi Miler (Adresse folgt)",
-    status: "aktiv",
-    spots: "Noch Plätze frei",
-    price: "Preis auf Anfrage",
-  },
-  {
-    id: "schwangeren-eigen-1",
-    title: "Yoga für Schwangere",
+    id: "schwangeren-yoga-mo-1",
+    title: "Schwangeren-Yoga (Kurs 1)",
     description:
       "Sanfte Yoga-Praxis speziell für werdende Mamas. Atemübungen, sanfte Dehnungen und Entspannung.",
     provider: "eigen",
     providerName: "Eigener Kurs",
     category: "schwangeren-yoga",
-    schedule: "Mittwochs, 10:00 – 11:00 Uhr",
-    location: "Kursraum Kathi Miler (Adresse folgt)",
+    day: "Montag",
+    schedule: "Montags, 17:45 – 18:45 Uhr",
+    location: "Hebammenpraxis Markt Schwaben",
     status: "aktiv",
     spots: "Noch Plätze frei",
     price: "Preis auf Anfrage",
   },
   {
-    id: "rueckbildung-eigen-1",
-    title: "Rückbildungskurs",
+    id: "schwangeren-yoga-mo-2",
+    title: "Schwangeren-Yoga (Kurs 2)",
+    description:
+      "Sanfte Yoga-Praxis speziell für werdende Mamas. Atemübungen, sanfte Dehnungen und Entspannung.",
+    provider: "eigen",
+    providerName: "Eigener Kurs",
+    category: "schwangeren-yoga",
+    day: "Montag",
+    schedule: "Montags, 19:00 – 20:00 Uhr",
+    location: "Hebammenpraxis Markt Schwaben",
+    status: "aktiv",
+    spots: "Noch Plätze frei",
+    price: "Preis auf Anfrage",
+  },
+  {
+    id: "rueckbildung-mi",
+    title: "Rückbildung",
     description:
       "Gezieltes Training nach der Geburt: Beckenboden, Rumpfstabilität und sanfter Wiedereinstieg in die Bewegung.",
     provider: "eigen",
     providerName: "Eigener Kurs",
     category: "rueckbildung",
-    schedule: "Freitags, 09:30 – 10:30 Uhr",
-    location: "Kursraum Kathi Miler (Adresse folgt)",
+    day: "Mittwoch",
+    schedule: "Mittwochs, 09:00 – 10:00 Uhr",
+    location: "Hebammenpraxis Markt Schwaben",
+    status: "aktiv",
+    spots: "Noch Plätze frei",
+    price: "Preis auf Anfrage",
+  },
+  {
+    id: "mama-sport-mi",
+    title: "Mama-Sport",
+    description:
+      "Fit bleiben als Mama — gemeinsam trainieren, Kraft aufbauen und den Alltag mit mehr Energie meistern.",
+    provider: "eigen",
+    providerName: "Eigener Kurs",
+    category: "mama-sport",
+    day: "Mittwoch",
+    schedule: "Mittwochs, 10:15 – 11:15 Uhr",
+    location: "Hebammenpraxis Markt Schwaben",
     status: "aktiv",
     spots: "Noch Plätze frei",
     price: "Preis auf Anfrage",
@@ -62,59 +82,62 @@ export const courses: Course[] = [
 
   // DJK Ottenhofen
   {
-    id: "yoga-djk-1",
-    title: "Yoga (DJK Ottenhofen)",
+    id: "yoga-djk-di",
+    title: "Yoga",
     description:
       "Yoga-Kurs im Rahmen des Sportvereins DJK Ottenhofen. Für Vereinsmitglieder und Gäste.",
     provider: "djk",
-    providerName: "DJK Ottenhofen",
+    providerName: "Über den DJK Ottenhofen",
     category: "yoga",
-    schedule: "Dienstags, 19:00 – 20:15 Uhr",
-    location: "Turnhalle DJK Ottenhofen",
+    day: "Dienstag",
+    schedule: "Dienstags, 17:30 – 18:45 Uhr",
+    location: "DJK Ottenhofen",
     status: "aktiv",
-    spots: "Noch Plätze frei",
-    price: "Vereinsbeitrag",
+    note: "Anmeldung über den Verein",
   },
   {
-    id: "rueckbildung-djk-1",
-    title: "Rückbildung (DJK Ottenhofen)",
+    id: "yoga-djk-fr",
+    title: "Early Bird Yoga",
     description:
-      "Rückbildungskurs über den Sportverein DJK Ottenhofen.",
+      "Starte energiegeladen in den Tag mit einer belebenden Yoga-Einheit am frühen Morgen.",
     provider: "djk",
-    providerName: "DJK Ottenhofen",
-    category: "rueckbildung",
-    schedule: "Donnerstags, 10:00 – 11:00 Uhr",
-    location: "Turnhalle DJK Ottenhofen",
-    status: "geplant",
-    startDate: "Geplanter Start: Frühjahr 2026",
+    providerName: "Über den DJK Ottenhofen",
+    category: "yoga",
+    day: "Freitag",
+    schedule: "Freitags, 07:00 – 08:00 Uhr",
+    location: "DJK Ottenhofen",
+    status: "aktiv",
+    note: "Anmeldung über den Verein",
+  },
+  {
+    id: "workout-mix-djk-fr",
+    title: "Workout Mix",
+    description:
+      "Abwechslungsreiches Ganzkörpertraining mit Elementen aus Fitness, Kraft und Ausdauer.",
+    provider: "djk",
+    providerName: "Über den DJK Ottenhofen",
+    category: "workout-mix",
+    day: "Freitag",
+    schedule: "Freitags, 08:15 – 09:15 Uhr",
+    location: "DJK Ottenhofen",
+    status: "aktiv",
+    note: "Anmeldung über den Verein",
   },
 
-  // Volkshochschule
+  // Volkshochschule Poing
   {
-    id: "yoga-vhs-1",
-    title: "Yoga Grundkurs (VHS)",
+    id: "mama-sport-vhs-di",
+    title: "Mama-Sport",
     description:
-      "Yoga-Einsteigerkurs über die Volkshochschule. Ideal für Anfänger ohne Vorkenntnisse.",
+      "Mama-Sport über die Volkshochschule Poing. Fit bleiben als Mama — gemeinsam trainieren und Kraft aufbauen.",
     provider: "vhs",
-    providerName: "Volkshochschule",
-    category: "yoga",
-    schedule: "Mittwochs, 18:30 – 19:45 Uhr",
-    location: "VHS-Kursraum (Adresse folgt)",
+    providerName: "Über die VHS Poing",
+    category: "mama-sport",
+    day: "Dienstag",
+    schedule: "Dienstags, 10:15 – 11:15 Uhr",
+    location: "Volkshochschule Poing",
     status: "aktiv",
-    price: "VHS-Kursgebühr",
-  },
-  {
-    id: "schwangeren-vhs-1",
-    title: "Schwangeren-Yoga (VHS)",
-    description:
-      "Yoga für Schwangere über die Volkshochschule. Sanft, sicher und wohltuend.",
-    provider: "vhs",
-    providerName: "Volkshochschule",
-    category: "schwangeren-yoga",
-    schedule: "Termine auf Anfrage",
-    location: "VHS-Kursraum (Adresse folgt)",
-    status: "geplant",
-    startDate: "Geplant für 2026",
+    note: "Anmeldung über die VHS Poing",
   },
 ];
 
@@ -125,19 +148,19 @@ export const providerInfo: Record<
   eigen: {
     name: "Eigene Kurse",
     description:
-      "Kurse in eigener Regie — direkt bei mir buchen und anfragen.",
+      "Kurse in eigener Regie in der Hebammenpraxis Markt Schwaben — direkt bei mir buchen und anfragen.",
     color: "var(--color-sage-600)",
   },
   djk: {
-    name: "DJK Ottenhofen",
+    name: "Über den DJK Ottenhofen",
     description:
       "Kurse über den Sportverein DJK Ottenhofen. Anmeldung über den Verein.",
     color: "var(--color-warm-600)",
   },
   vhs: {
-    name: "Volkshochschule",
+    name: "Über die Volkshochschule Poing",
     description:
-      "Kurse über die Volkshochschule. Anmeldung über die VHS.",
+      "Kurse über die Volkshochschule Poing. Anmeldung über die VHS.",
     color: "var(--color-rose-600)",
   },
 };
