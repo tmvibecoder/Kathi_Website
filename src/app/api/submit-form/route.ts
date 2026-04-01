@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import fs from "fs/promises";
-import path from "path";
+import nodemailer from "nodemailer";
 import { forms } from "@/lib/forms";
 
-const PDFS_DIR = path.join(process.cwd(), "pdfs");
-
-async function ensureDir(dir: string) {
-  try {
-    await fs.access(dir);
-  } catch {
-    await fs.mkdir(dir, { recursive: true });
-  }
-}
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -278,10 +277,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Save PDF
+    // Save PDF and send via email
     const pdfBytes = await pdfDoc.save();
-
-    await ensureDir(PDFS_DIR);
 
     const sanitizedName = (answers.name || "unbekannt")
       .replace(/[^a-zA-ZäöüÄÖÜß\s-]/g, "")
@@ -291,13 +288,24 @@ export async function POST(request: NextRequest) {
       .toISOString()
       .slice(0, 10);
     const fileName = `${formId}_${sanitizedName}_${dateFileName}.pdf`;
-    const filePath = path.join(PDFS_DIR, fileName);
 
-    await fs.writeFile(filePath, pdfBytes);
+    await transporter.sendMail({
+      from: `"Kathi Website" <${process.env.SMTP_USER}>`,
+      to: process.env.NOTIFY_EMAIL,
+      subject: `Neuer Fragebogen: ${formDef.title} – ${answers.name}`,
+      text: `Ein neuer Fragebogen wurde ausgefüllt.\n\nFormular: ${formDef.title}\nName: ${answers.name}\nDatum: ${new Date(timestamp).toLocaleDateString("de-DE")}\n\nDie ausgefüllte PDF ist als Anhang beigefügt.`,
+      attachments: [
+        {
+          filename: fileName,
+          content: Buffer.from(pdfBytes),
+          contentType: "application/pdf",
+        },
+      ],
+    });
 
     return NextResponse.json({
       success: true,
-      message: "Fragebogen erfolgreich gespeichert.",
+      message: "Fragebogen erfolgreich gesendet.",
       fileName,
     });
   } catch (error) {

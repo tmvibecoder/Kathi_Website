@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
+import nodemailer from "nodemailer";
 
-const CONTACTS_DIR = path.join(process.cwd(), "pdfs", "kontakt-anfragen");
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,35 +23,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Store contact request as JSON file
-    try {
-      await fs.access(CONTACTS_DIR);
-    } catch {
-      await fs.mkdir(CONTACTS_DIR, { recursive: true });
-    }
-
-    const timestamp = new Date().toISOString();
-    const sanitizedName = name
-      .replace(/[^a-zA-ZäöüÄÖÜß\s-]/g, "")
-      .replace(/\s+/g, "_")
-      .substring(0, 50);
-    const fileName = `anfrage_${sanitizedName}_${timestamp.slice(0, 10)}_${Date.now()}.json`;
-
-    await fs.writeFile(
-      path.join(CONTACTS_DIR, fileName),
-      JSON.stringify(
-        {
-          name,
-          email,
-          phone: phone || "",
-          kurs: kurs || "",
-          message,
-          timestamp,
-        },
-        null,
-        2
-      )
-    );
+    await transporter.sendMail({
+      from: `"Kathi Website" <${process.env.SMTP_USER}>`,
+      to: process.env.NOTIFY_EMAIL,
+      replyTo: email,
+      subject: `Neue Kursanfrage von ${name}${kurs ? ` – ${kurs}` : ""}`,
+      text: [
+        `Name: ${name}`,
+        `E-Mail: ${email}`,
+        phone ? `Telefon: ${phone}` : null,
+        kurs ? `Kurs: ${kurs}` : null,
+        "",
+        "Nachricht:",
+        message,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    });
 
     return NextResponse.json({
       success: true,
