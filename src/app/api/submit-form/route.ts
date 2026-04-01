@@ -1,17 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { forms } from "@/lib/forms";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -289,16 +281,15 @@ export async function POST(request: NextRequest) {
       .slice(0, 10);
     const fileName = `${formId}_${sanitizedName}_${dateFileName}.pdf`;
 
-    await transporter.sendMail({
-      from: `"Kathi Website" <${process.env.SMTP_USER}>`,
-      to: process.env.NOTIFY_EMAIL,
+    await resend.emails.send({
+      from: `Kathi Website <${process.env.RESEND_FROM_EMAIL}>`,
+      to: process.env.NOTIFY_EMAIL!,
       subject: `Neuer Fragebogen: ${formDef.title} – ${answers.name}`,
       text: `Ein neuer Fragebogen wurde ausgefüllt.\n\nFormular: ${formDef.title}\nName: ${answers.name}\nDatum: ${new Date(timestamp).toLocaleDateString("de-DE")}\n\nDie ausgefüllte PDF ist als Anhang beigefügt.`,
       attachments: [
         {
           filename: fileName,
           content: Buffer.from(pdfBytes),
-          contentType: "application/pdf",
         },
       ],
     });
