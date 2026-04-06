@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import fs from "fs/promises";
 import path from "path";
+import { Resend } from "resend";
 import { forms } from "@/lib/forms";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const PDFS_DIR = path.join(process.cwd(), "pdfs");
 
@@ -294,6 +297,28 @@ export async function POST(request: NextRequest) {
     const filePath = path.join(PDFS_DIR, fileName);
 
     await fs.writeFile(filePath, pdfBytes);
+
+    // Send email with PDF attachment
+    try {
+      await resend.emails.send({
+        from: "Kathi Website <noreply@katharinamiler.de>",
+        to: "katharina@miler.de",
+        subject: `Neuer Fragebogen: ${formDef.subtitle} — ${answers.name}`,
+        html: `<p>Ein neuer Fragebogen wurde ausgefüllt.</p>
+<p><strong>Formular:</strong> ${formDef.subtitle}</p>
+<p><strong>Name:</strong> ${answers.name}</p>
+<p><strong>Datum:</strong> ${new Date(timestamp).toLocaleDateString("de-DE")}</p>
+<p>Das ausgefüllte PDF ist als Anhang beigefügt.</p>`,
+        attachments: [
+          {
+            filename: fileName,
+            content: Buffer.from(pdfBytes).toString("base64"),
+          },
+        ],
+      });
+    } catch (emailError) {
+      console.error("Email send error:", emailError);
+    }
 
     return NextResponse.json({
       success: true,

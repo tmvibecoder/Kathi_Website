@@ -83,7 +83,7 @@ export function HealthForm({ form }: HealthFormProps) {
         <p className="text-[var(--color-warm-600)]">
           Ihr Fragebogen wurde erfolgreich übermittelt und als PDF gespeichert.
           <br />
-          Katharina Miler wird Ihre Angaben vor Kursbeginn prüfen.
+          Kathi wird Ihre Angaben vor dem Kursbeginn prüfen.
         </p>
       </div>
     );

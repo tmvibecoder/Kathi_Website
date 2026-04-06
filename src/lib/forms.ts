@@ -20,7 +20,7 @@ export const forms: FormDefinition[] = [
   {
     id: "rueckbildung",
     title: "Fragebogen / Selbstauskunft",
-    subtitle: "Rückbildung bei Katharina Miler",
+    subtitle: "Rückbildung bei Kathi",
     disclaimer:
       "Sämtliche Angaben unterliegen der Schweigepflicht und den geltenden Datenschutzbestimmungen.",
     questions: [
@@ -102,7 +102,7 @@ export const forms: FormDefinition[] = [
   {
     id: "schwangeren-yoga",
     title: "Fragebogen / Selbstauskunft",
-    subtitle: "Schwangerschafts-Yoga bei Katharina Miler",
+    subtitle: "Schwangerschafts-Yoga bei Kathi",
     disclaimer:
       "Sämtliche Angaben unterliegen der Schweigepflicht und den geltenden Datenschutzbestimmungen.",
     questions: [

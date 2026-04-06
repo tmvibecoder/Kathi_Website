@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const CONTACTS_DIR = path.join(process.cwd(), "pdfs", "kontakt-anfragen");
 
@@ -45,6 +48,23 @@ export async function POST(request: NextRequest) {
         2
       )
     );
+
+    // Send email notification
+    try {
+      await resend.emails.send({
+        from: "Kathi Website <noreply@katharinamiler.de>",
+        to: "katharina@miler.de",
+        subject: `Neue Kontaktanfrage von ${name}`,
+        html: `<p><strong>Name:</strong> ${name}</p>
+<p><strong>E-Mail:</strong> ${email}</p>
+${phone ? `<p><strong>Telefon:</strong> ${phone}</p>` : ""}
+${kurs ? `<p><strong>Kurs:</strong> ${kurs}</p>` : ""}
+<p><strong>Nachricht:</strong></p>
+<p>${message}</p>`,
+      });
+    } catch (emailError) {
+      console.error("Email send error:", emailError);
+    }
 
     return NextResponse.json({
       success: true,
