@@ -301,7 +301,7 @@ export async function POST(request: NextRequest) {
     // Send email with PDF attachment
     try {
       await resend.emails.send({
-        from: "Kathi Website <noreply@katharinamiler.de>",
+        from: "Kathi Website <onboarding@resend.dev>",
         to: "katharina@miler.de",
         subject: `Neuer Fragebogen: ${formDef.subtitle} — ${answers.name}`,
         html: `<p>Ein neuer Fragebogen wurde ausgefüllt.</p>

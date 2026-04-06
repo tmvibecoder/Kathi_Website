@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     // Send email notification
     try {
       await resend.emails.send({
-        from: "Kathi Website <noreply@katharinamiler.de>",
+        from: "Kathi Website <onboarding@resend.dev>",
         to: "katharina@miler.de",
         subject: `Neue Kontaktanfrage von ${name}`,
         html: `<p><strong>Name:</strong> ${name}</p>
