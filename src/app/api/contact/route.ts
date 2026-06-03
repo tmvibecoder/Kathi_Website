@@ -49,21 +49,32 @@ export async function POST(request: NextRequest) {
       )
     );
 
-    // Send email notification
-    try {
-      await resend.emails.send({
-        from: "Kathi Website <onboarding@resend.dev>",
-        to: "katharina@miler.de",
-        subject: `Neue Kontaktanfrage von ${name}`,
-        html: `<p><strong>Name:</strong> ${name}</p>
+    // Send email notification.
+    // Absender MUSS auf der bei Resend verifizierten Domain "miler.de" liegen,
+    // sonst lehnt Resend die Zustellung ab (der Sandbox-Absender onboarding@resend.dev
+    // liefert nur an die Resend-Konto-Mail und nicht an katharina@miler.de).
+    const { error: sendError } = await resend.emails.send({
+      from: "Kathi Website <katharina@miler.de>",
+      to: "katharina@miler.de",
+      replyTo: email,
+      subject: `Neue Kontaktanfrage von ${name}`,
+      html: `<p><strong>Name:</strong> ${name}</p>
 <p><strong>E-Mail:</strong> ${email}</p>
 ${phone ? `<p><strong>Telefon:</strong> ${phone}</p>` : ""}
 ${kurs ? `<p><strong>Kurs:</strong> ${kurs}</p>` : ""}
 <p><strong>Nachricht:</strong></p>
 <p>${message}</p>`,
-      });
-    } catch (emailError) {
-      console.error("Email send error:", emailError);
+    });
+
+    // Resend wirft bei API-Fehlern keine Exception, sondern liefert { error }.
+    // Ohne diese Prüfung würde dem Nutzer fälschlich "erfolgreich" gemeldet,
+    // obwohl keine Mail ankommt. Die Anfrage ist oben bereits als JSON gesichert.
+    if (sendError) {
+      console.error("Contact form Resend error:", sendError);
+      return NextResponse.json(
+        { error: "E-Mail konnte nicht gesendet werden. Bitte versuche es später erneut." },
+        { status: 502 }
+      );
     }
 
     return NextResponse.json({

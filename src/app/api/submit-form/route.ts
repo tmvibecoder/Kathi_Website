@@ -298,31 +298,39 @@ export async function POST(request: NextRequest) {
 
     await fs.writeFile(filePath, pdfBytes);
 
-    // Send email with PDF attachment
-    try {
-      await resend.emails.send({
-        from: "Kathi Website <onboarding@resend.dev>",
-        to: "katharina@miler.de",
-        subject: `Neuer Fragebogen: ${formDef.subtitle} — ${answers.name}`,
-        html: `<p>Ein neuer Fragebogen wurde ausgefüllt.</p>
+    // Send email with PDF attachment.
+    // Absender MUSS auf der bei Resend verifizierten Domain "miler.de" liegen
+    // (der Sandbox-Absender onboarding@resend.dev wird sonst nicht zugestellt).
+    const { error: sendError } = await resend.emails.send({
+      from: "Kathi Website <katharina@miler.de>",
+      to: "katharina@miler.de",
+      subject: `Neuer Fragebogen: ${formDef.subtitle} — ${answers.name}`,
+      html: `<p>Ein neuer Fragebogen wurde ausgefüllt.</p>
 <p><strong>Formular:</strong> ${formDef.subtitle}</p>
 <p><strong>Name:</strong> ${answers.name}</p>
 <p><strong>Datum:</strong> ${new Date(timestamp).toLocaleDateString("de-DE")}</p>
 <p>Das ausgefüllte PDF ist als Anhang beigefügt.</p>`,
-        attachments: [
-          {
-            filename: fileName,
-            content: Buffer.from(pdfBytes).toString("base64"),
-          },
-        ],
-      });
-    } catch (emailError) {
-      console.error("Email send error:", emailError);
+      attachments: [
+        {
+          filename: fileName,
+          content: Buffer.from(pdfBytes).toString("base64"),
+        },
+      ],
+    });
+
+    // Resend wirft bei API-Fehlern keine Exception, sondern liefert { error }.
+    // Das PDF ist oben bereits auf dem Server gesichert.
+    if (sendError) {
+      console.error("Form submission Resend error:", sendError);
+      return NextResponse.json(
+        { error: "Fragebogen konnte nicht gesendet werden. Bitte versuche es später erneut." },
+        { status: 502 }
+      );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Fragebogen erfolgreich gespeichert.",
+      message: "Fragebogen erfolgreich gesendet.",
       fileName,
     });
   } catch (error) {
