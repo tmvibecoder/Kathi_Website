@@ -34,3 +34,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Kursbezogene Teilnahmeformulare
+
+Die Route `/teilnahme` liest den persönlichen Link aus der Reservierungs-E-Mail. `/api/participation` verbindet die Webseite serverseitig mit der Fitness-Verwaltung; optional lässt sich `FITNESS_API_URL` setzen (Standard: `https://app.katharinamiler.de`). Es wird dafür kein Admin-Kennwort im Browser benötigt. Die passenden Änderungen der Fitness-App müssen gemeinsam bereitgestellt werden. Generische Formulare unter `/formulare` behalten ihren bisherigen Ablauf.
+
+Fragebogen, Unterschrift und PDF-Nachweis werden in der Fitness-App gespeichert. Die Kopie per E-Mail enthält einen persönlichen Download-Link. Die vorhandenen Rechtstexte werden vom Backend versioniert bereitgestellt. Hinweise zu Betrieb, Sicherung und Rechnungsversand stehen im Fitness-App-Repository unter `docs/teilnahme-workflow.md`.

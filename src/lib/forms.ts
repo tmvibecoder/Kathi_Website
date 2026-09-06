@@ -7,6 +7,9 @@ export interface FormQuestion {
 }
 
 export interface FormDefinition {
+  version?: string;
+  consentText?: string;
+  privacyText?: string;
   id: string;
   title: string;
   subtitle: string;

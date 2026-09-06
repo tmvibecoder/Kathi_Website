@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 
@@ -10,19 +10,12 @@ function KontaktForm() {
     name: "",
     email: "",
     phone: "",
-    kurs: "",
+    kurs: searchParams.get("kurs") || "",
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle"
   );
-
-  useEffect(() => {
-    const kurs = searchParams.get("kurs");
-    if (kurs) {
-      setFormData((prev) => ({ ...prev, kurs }));
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

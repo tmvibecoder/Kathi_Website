@@ -6,17 +6,46 @@ import type { FormDefinition } from "@/lib/forms";
 
 interface HealthFormProps {
   form: FormDefinition;
+  participation?: { token: string; submittedAt?: string | null; email?: string };
 }
 
-export function HealthForm({ form }: HealthFormProps) {
+export function HealthForm({ form, participation }: HealthFormProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [signature, setSignature] = useState<string | null>(null);
   const [consent, setConsent] = useState(false);
   const [dsgvoConsent, setDsgvoConsent] = useState(false);
   const [status, setStatus] = useState<
     "idle" | "submitting" | "success" | "error"
-  >("idle");
+  >(participation?.submittedAt ? "success" : "idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [needsReview, setNeedsReview] = useState(false);
+  const [copyMessage, setCopyMessage] = useState("");
+  const [copyBusy, setCopyBusy] = useState(false);
+
+  async function receiveCopy(action: "pdf" | "copy") {
+    if (!participation || copyBusy) return;
+    setCopyBusy(true);
+    setCopyMessage("");
+    try {
+      const response = await fetch("/api/participation", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, token: participation.token }),
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Die Kopie konnte nicht geladen werden.");
+      }
+      if (action === "pdf") {
+        const url = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = url; link.download = "Teilnahmebestaetigung.pdf";
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        setCopyMessage("Deine PDF-Kopie wurde zum Download bereitgestellt.");
+      } else setCopyMessage("Der persönliche Download-Link wurde an deine hinterlegte E-Mail-Adresse gesendet.");
+    } catch (error) { setCopyMessage(error instanceof Error ? error.message : "Bitte später erneut versuchen."); }
+    finally { setCopyBusy(false); }
+  }
 
   const handleSignatureChange = useCallback((dataUrl: string | null) => {
     setSignature(dataUrl);
@@ -46,10 +75,12 @@ export function HealthForm({ form }: HealthFormProps) {
     setErrorMessage("");
 
     try {
-      const response = await fetch("/api/submit-form", {
+      const response = await fetch(participation ? "/api/participation" : "/api/submit-form", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          ...(participation ? { action: "submit", token: participation.token, version: form.version } : {}),
+          consent, privacyConsent: dsgvoConsent, needsReview,
           formId: form.id,
           formTitle: form.subtitle,
           answers,
@@ -75,7 +106,7 @@ export function HealthForm({ form }: HealthFormProps) {
 
   if (status === "success") {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12" role="status" aria-live="polite">
         <div className="text-4xl mb-4">✓</div>
         <h3 className="text-2xl text-[var(--color-sage-700)] mb-3">
           Vielen Dank!
@@ -85,6 +116,17 @@ export function HealthForm({ form }: HealthFormProps) {
           <br />
           Kathi wird Ihre Angaben vor dem Kursbeginn prüfen.
         </p>
+        {participation && (
+          <div className="mt-6 space-y-4">
+            <p className="text-sm text-[var(--color-warm-700)]">Die Buchungsbestätigung mit Rechnung erhältst du separat, sobald Zahlung und Formular vollständig vorliegen und Rückfragen geklärt sind.</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <button type="button" disabled={copyBusy} onClick={() => receiveCopy("pdf")} className="bg-[var(--color-sage-600)] text-white px-5 py-3 disabled:opacity-50">Als PDF speichern</button>
+              <button type="button" disabled={copyBusy} onClick={() => receiveCopy("copy")} className="border border-[var(--color-sage-600)] text-[var(--color-sage-700)] px-5 py-3 disabled:opacity-50">Kopie per E-Mail erhalten</button>
+            </div>
+            <p className="text-sm text-[var(--color-warm-700)]">{participation.email ? `E-Mail mit geschütztem Download-Link an ${participation.email}.` : "Die Kopie geht an deine hinterlegte E-Mail-Adresse."}</p>
+            <p className="text-sm text-[var(--color-warm-700)]" aria-live="polite">{copyMessage}</p>
+          </div>
+        )}
       </div>
     );
   }
@@ -157,6 +199,12 @@ export function HealthForm({ form }: HealthFormProps) {
         ))}
       </div>
 
+      {participation && (
+        <label className="flex items-start gap-3 text-sm text-[var(--color-warm-700)]">
+          <input type="checkbox" checked={needsReview} onChange={e => setNeedsReview(e.target.checked)} className="mt-1 accent-[var(--color-sage-600)]" />
+          Ich möchte vor der Buchungsbestätigung etwas persönlich mit Kathi besprechen.
+        </label>
+      )}
       {/* Haftungsausschluss */}
       <div className="bg-[var(--color-warm-100)] p-6 border-l-4 border-[var(--color-sage-600)]">
         <h3 className="text-lg font-semibold text-[var(--color-warm-900)] mb-3">
@@ -191,8 +239,7 @@ export function HealthForm({ form }: HealthFormProps) {
             className="mt-1 w-4 h-4 accent-[var(--color-sage-600)]"
           />
           <span className="text-sm text-[var(--color-warm-700)]">
-            Ich habe den Haftungsausschluss und den Teilnahme- und
-            Stornierungshinweis gelesen und akzeptiere diese. *
+            {form.consentText || "Ich habe den Haftungsausschluss und den Teilnahme- und Stornierungshinweis gelesen und akzeptiere diese."} *
           </span>
         </label>
 
@@ -204,10 +251,7 @@ export function HealthForm({ form }: HealthFormProps) {
             className="mt-1 w-4 h-4 accent-[var(--color-sage-600)]"
           />
           <span className="text-sm text-[var(--color-warm-700)]">
-            Ich willige ausdrücklich in die Verarbeitung meiner
-            Gesundheitsdaten zum Zweck der Beurteilung meiner Eignung für die
-            Kursteilnahme ein. Ich kann diese Einwilligung jederzeit
-            widerrufen. Weitere Informationen finde ich in der{" "}
+            {form.privacyText || "Ich willige ausdrücklich in die Verarbeitung meiner Gesundheitsdaten zum Zweck der Beurteilung meiner Eignung für die Kursteilnahme ein. Ich kann diese Einwilligung jederzeit widerrufen."}{" "}
             <a
               href="/datenschutz"
               target="_blank"
@@ -230,7 +274,7 @@ export function HealthForm({ form }: HealthFormProps) {
 
       {/* Error Message */}
       {errorMessage && (
-        <p className="text-[var(--color-rose-600)] text-sm text-center">
+        <p role="alert" className="text-[var(--color-rose-600)] text-sm text-center">
           {errorMessage}
         </p>
       )}
