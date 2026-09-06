@@ -15,10 +15,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -eu
             cd /home/kathi-website
-            git pull origin main
+            git pull --ff-only origin main
             npm install
             npm run build
-            pm2 restart kathi-website || pm2 restart all
+            pm2 restart kathi-website
             pm2 save
             echo "Deployment completed at $(date)"
