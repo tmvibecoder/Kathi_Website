@@ -51,7 +51,10 @@ mit der Fitness-Verwaltung; optional `FITNESS_API_URL` setzen (Standard:
 `https://app.katharinamiler.de`). Diese Variable gehört zur alten Anwendung, nicht zur V2.
 
 Fragebogen, Unterschrift und PDF-Nachweis des kursbezogenen Ablaufs werden in der Fitness-App
-gespeichert. Die E-Mail-Kopie enthält einen persönlichen Download-Link. Die produktive
+gespeichert. Seit dem Backend-Update vom 07.09.2026 enthält die angeforderte E-Mail-Kopie
+den gespeicherten Nachweis als PDF-Anhang mit Antworten, Erklärungen und Unterschrift.
+Der Proxy übernimmt dieses Verhalten; seine alten UI-Texte sprechen im Quellcode noch
+von einem Download-Link. Diese Legacy-Oberfläche wurde dabei nicht überarbeitet. Die produktive
 V2-Seite `/teilnahme` verwendet dieselbe Backend-Funktion direkt. Generische alte Formulare
 im Quellcode sind nicht der neue kursbezogene Buchungsablauf.
 [Teilnahme und Buchung](https://github.com/tmvibecoder/fitness-app/blob/main/docs/teilnahme-workflow.md)
