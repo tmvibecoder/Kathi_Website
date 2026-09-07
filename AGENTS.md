@@ -25,11 +25,13 @@ Die folgenden Projektanweisungen wurden aus `CLAUDE.md` übernommen. Sie gelten 
 
 ---
 
-# Kathi Website (katharinamiler.de)
+# Kathi Website – bisherige Anwendung
 
-Website der Trainerin Katharina Miler: Kursangebot (Yoga/Rückbildung) mit
-Kontaktformular und PDF-Fragebögen. Eingaben werden per E-Mail (Resend)
-versendet.
+Seit 06.09.2026 stammen die öffentlichen Seiten auf katharinamiler.de aus dem separaten
+Repository `tmvibecoder/kathi-webseite-v2`. Dieses Repository bleibt als laufende Next.js-
+Anwendung für ältere API-Aufrufe und Rückfall erhalten. Neue Website-Anfragen und
+kursbezogene Teilnahme-Nachweise verarbeitet die Fitness-App. Zuständigkeiten, aktuelle
+Routen und Links zur zentralen Betriebsdokumentation stehen in [README.md](README.md).
 
 ## Tech-Stack
 
@@ -42,8 +44,11 @@ Auto-Deploy via GitHub Actions (`.github/workflows/deploy.yml`):
 Push auf `main` → SSH zu Server **web01** → `git pull` + `npm install` +
 `npm run build` + `pm2 restart kathi-website`.
 
-- Server-Pfad: `/home/kathi-website`, pm2-Prozess `kathi-website`,
-  live auf https://katharinamiler.de
+- Server-Pfad: `/home/kathi-website`, pm2-Prozess `kathi-website`, Port 3001.
+  nginx verwendet diesen Dienst noch für `/api/...` und fehlende alte `/_next/...`-Assets.
+  Die öffentlichen Seiten kommen aus `/var/www/kathi-webseite-v2/current`.
+- Ein Deploy dieses Repositories aktualisiert den alten Dienst; er veröffentlicht nicht V2.
+  Den Dienst wegen der verbliebenen API-Aufrufe nicht ungeprüft stilllegen.
 - Repo-Secrets: `SERVER_IP`, `SERVER_USER`, `SSH_PRIVATE_KEY`
   (gemeinsamer Deploy-Key auf web01)
 - Doku-/Nicht-Deploy-Commits mit `[skip ci]` in der Message versehen.

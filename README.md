@@ -1,42 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kathi Website – bisherige Next.js-Anwendung
 
-## Getting Started
+Stand: 07.09.2026. Seit dem 06.09.2026 wird die öffentliche Website unter
+[katharinamiler.de](https://katharinamiler.de) und www.katharinamiler.de aus dem separaten
+Repository [kathi-webseite-v2](https://github.com/tmvibecoder/kathi-webseite-v2) statisch
+bereitgestellt. Dieses Repository enthält die bisherige Website und bleibt für ältere
+API-Aufrufe sowie einen möglichen Rückfall in Betrieb.
 
-First, run the development server:
+## Zuständigkeiten
+
+| Bestandteil | Betrieb |
+|---|---|
+| Neue öffentliche Seiten | V2, nginx-Root `/var/www/kathi-webseite-v2/current` |
+| Diese bisherige Next.js-Anwendung | web01, `/home/kathi-website`, PM2 `kathi-website`, Port 3001 |
+| Kurse, neue Anfragen, Teilnahme und Rechnungen | [fitness-app](https://github.com/tmvibecoder/fitness-app), app.katharinamiler.de, Port 3003 |
+
+nginx leitet unter der öffentlichen Domain `/api/...` weiterhin an diese Anwendung weiter.
+Nicht im statischen Release vorhandene `/_next/...`-Assets fallen ebenfalls auf sie zurück.
+`/kontakt` leitet auf die neue Seite `/anfrage` um; `/fragebogen/...` auf `/frageboegen`.
+Die alte Anwendung daher nicht ohne Prüfung ihrer verbliebenen Aufrufe stoppen.
+
+Die **neue** Website ruft Kurs-, Anfrage- und Teilnahme-API direkt aus dem Browser unter
+`https://app.katharinamiler.de` auf. Ihr Erscheinungsbild wird in `kathi-webseite-v2` geändert,
+nicht in diesem Repository. [Livebetrieb, Routing, Sicherung, Rückfall und Prüfprotokoll](https://github.com/tmvibecoder/kathi-webseite-v2/blob/main/docs/livebetrieb.md)
+sind dort zentral dokumentiert.
+
+## Entwicklung dieser Anwendung
+
+Next.js 16, React 19, TypeScript und Tailwind CSS 4; Resend/nodemailer für bisherigen
+Mailversand, pdf-lib und signature_pad für Fragebögen. Gemeinsame Projektregeln:
+[AGENTS.md](AGENTS.md).
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Die lokale Anwendung ist standardmäßig unter http://localhost:3000 erreichbar.
+Codeänderungen mit den im Projekt vorhandenen Lint- und Buildbefehlen prüfen:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Bestehende Teilnahme-Anbindung
 
-## Learn More
+Die in diesem Repository vorhandene Route `/teilnahme` liest den persönlichen Link aus
+der Reservierungs-E-Mail. Ihr Server-Proxy `/api/participation` verbindet die alte Anwendung
+mit der Fitness-Verwaltung; optional `FITNESS_API_URL` setzen (Standard:
+`https://app.katharinamiler.de`). Diese Variable gehört zur alten Anwendung, nicht zur V2.
 
-To learn more about Next.js, take a look at the following resources:
+Fragebogen, Unterschrift und PDF-Nachweis des kursbezogenen Ablaufs werden in der Fitness-App
+gespeichert. Die E-Mail-Kopie enthält einen persönlichen Download-Link. Die produktive
+V2-Seite `/teilnahme` verwendet dieselbe Backend-Funktion direkt. Generische alte Formulare
+im Quellcode sind nicht der neue kursbezogene Buchungsablauf.
+[Teilnahme und Buchung](https://github.com/tmvibecoder/fitness-app/blob/main/docs/teilnahme-workflow.md)
+und [neue Website-Anfragen](https://github.com/tmvibecoder/fitness-app/blob/main/docs/website-anfragen.md)
+sind in der Verwaltung dokumentiert.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment und Rückfall
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Push auf `main` startet weiterhin den GitHub-Actions-Workflow mit `git pull --ff-only`,
+`npm install`, `npm run build` und `pm2 restart kathi-website` auf web01. Das aktualisiert
+diesen alten Dienst, ersetzt jedoch **nicht** die statische V2-Website. Reine
+Dokumentations-Commits mit `[skip ci]` verhindern einen unnötigen Neustart.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Kursbezogene Teilnahmeformulare
-
-Die Route `/teilnahme` liest den persönlichen Link aus der Reservierungs-E-Mail. `/api/participation` verbindet die Webseite serverseitig mit der Fitness-Verwaltung; optional lässt sich `FITNESS_API_URL` setzen (Standard: `https://app.katharinamiler.de`). Es wird dafür kein Admin-Kennwort im Browser benötigt. Die passenden Änderungen der Fitness-App müssen gemeinsam bereitgestellt werden. Generische Formulare unter `/formulare` behalten ihren bisherigen Ablauf.
-
-Fragebogen, Unterschrift und PDF-Nachweis werden in der Fitness-App gespeichert. Die Kopie per E-Mail enthält einen persönlichen Download-Link. Die vorhandenen Rechtstexte werden vom Backend versioniert bereitgestellt. Hinweise zu Betrieb, Sicherung und Rechnungsversand stehen im Fitness-App-Repository unter `docs/teilnahme-workflow.md`.
+Beim öffentlichen Wechsel wurde der Anwendungscode dieses Dienstes nicht verändert.
+Für eine Rückkehr zu seinen Seiten ist eine nginx-Umschaltung erforderlich. Vorgehen und
+vorhandene Sicherungen stehen im verlinkten V2-Betriebshandbuch. Dabei keine alte
+Verwaltungsdatenbank wiederherstellen: neue Anfragen, Nachweise und Zahlungen müssen
+bestehen bleiben. Zugangsdaten, private PDFs und Datensicherungen bleiben außerhalb von Git.
